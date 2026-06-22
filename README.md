@@ -2,39 +2,38 @@
 
 An end-to-end data pipeline that pulls live Reddit data, runs sentiment and keyword analysis using the Claude AI API, and visualizes everything in a custom interactive dashboard built with Google Apps Script.
 
-Built on r/personalfinance — 500 posts, 2,265 comments, fully analyzed.
+Built on r/personalfinance: 500 posts, 2,265 comments, fully analyzed.
 
-![Dashboard Overview](<img width="1160" height="682" alt="Screenshot 2026-06-22 191513" src="https://github.com/user-attachments/assets/638ac1b5-aa15-4fae-949f-3aecdcb4e02d" />
-)
+![Dashboard Overview](dashboard-overview.png)
 
 ---
 
 ## What it does
 
-1. **Fetches** posts and comments from any public subreddit using the [Arctic Shift](https://arctic-shift.photon-reddit.com) public Reddit archive API — no Reddit API key required
-2. **Stores** structured data in Google Sheets with clean columns for post metadata, comment bodies, timestamps, flair, and engagement metrics
-3. **Analyzes** the dataset across four dimensions: sentiment (via Claude API), keyword frequency, flair/category breakdown, and top thread scoring
-4. **Visualizes** everything in a custom dark-themed HTML dashboard rendered inside Google Sheets via HtmlService — no external hosting needed
-5. **Powers an AI insight panel** where you can ask natural language questions about the data and get Claude-generated answers grounded in the actual numbers
+1. **Fetches** posts and comments from any public subreddit using the [Arctic Shift](https://arctic-shift.photon-reddit.com) public Reddit archive API. No Reddit API key required.
+2. **Stores** structured data in Google Sheets with clean columns for post metadata, comment bodies, timestamps, flair, and engagement metrics.
+3. **Analyzes** the dataset across four dimensions: sentiment (via Claude API), keyword frequency, flair/category breakdown, and top thread scoring.
+4. **Visualizes** everything in a custom dark-themed HTML dashboard rendered inside Google Sheets via HtmlService. No external hosting needed.
+5. **Powers an AI insight panel** where you can ask natural language questions about the data and get Claude-generated answers grounded in the actual numbers.
 
 ---
 
 ## Dashboard
 
-![Dashboard Screenshot](screenshots/dashboard-overview.png)
+![Dashboard Screenshot](dashboard-overview.png)
 
-![Posts by Category and Top Threads](screenshots/dashboard-threads.png)
+![Posts by Category and Top Threads](dashboard-threads.png)
 
-![Claude AI Insight Panel](screenshots/dashboard-ai.png)
+![Claude AI Insight Panel](dashboard-ai.png)
 
 The dashboard includes:
 
-- **Stat cards** — posts analyzed, average score, average comments, average upvote ratio
-- **Sentiment donut chart** — Positive / Neutral / Negative breakdown across all 500 posts, labeled by Claude Haiku
-- **Top keywords** — frequency-ranked terms extracted from post titles and comment bodies, stopwords filtered
-- **Posts by category** — flair breakdown showing which topics dominate the subreddit
-- **Top threads** — ranked by a weighted score combining upvotes, comment count, and upvote ratio
-- **Ask Claude panel** — type any question about the dataset and get a data-grounded answer in seconds
+- **Stat cards** showing posts analyzed, average score, average comments, and average upvote ratio
+- **Sentiment donut chart** with Positive / Neutral / Negative breakdown across all 500 posts, labeled by Claude Haiku
+- **Top keywords** frequency-ranked terms extracted from post titles and comment bodies, stopwords filtered
+- **Posts by category** flair breakdown showing which topics dominate the subreddit
+- **Top threads** ranked by a weighted score combining upvotes, comment count, and upvote ratio
+- **Ask Claude panel** where you type any question about the dataset and get a data-grounded answer in seconds
 
 ---
 
@@ -57,9 +56,9 @@ The dashboard includes:
 subreddit-analysis-pipeline/
 ├── Code.gs               # Fetches posts from Arctic Shift API into Google Sheets
 ├── CommentFetcher.gs     # Resume-able comment fetcher (50 posts per run, cursor-based)
-├── Analysis.gs           # Sentiment, keywords, posting patterns, flair breakdown, top threads
-├── Dashboard.gs          # Dashboard backend — data loaders and Claude API call handler
-├── DashboardView.html    # Dashboard frontend — charts, panels, AI input
+├── Analysis.gs           # Sentiment, keywords, flair breakdown, top threads
+├── Dashboard.gs          # Dashboard backend, data loaders, and Claude API call handler
+├── DashboardView.html    # Dashboard frontend, charts, panels, AI input
 └── README.md
 ```
 
@@ -69,17 +68,17 @@ subreddit-analysis-pipeline/
 
 ### 1. Set up Google Sheets
 
-Create a new Google Sheet. You can name it anything. Open **Extensions > Apps Script**.
+Create a new Google Sheet. Name it anything. Open **Extensions > Apps Script**.
 
 ### 2. Add the scripts
 
 Create the following files in Apps Script and paste the corresponding code into each:
 
-- `Code.gs` — replaces the default file
-- `CommentFetcher.gs` — new script file
-- `Analysis.gs` — new script file
-- `Dashboard.gs` — new script file
-- `DashboardView.html` — new HTML file
+- `Code.gs` replaces the default file
+- `CommentFetcher.gs` new script file
+- `Analysis.gs` new script file
+- `Dashboard.gs` new script file
+- `DashboardView.html` new HTML file
 
 ### 3. Add your Anthropic API key
 
@@ -108,7 +107,7 @@ runPostingPatterns()
 runFlairBreakdown()
 runTopThreads()
 runKeywordFrequency()
-runSentimentAnalysis()   ← hits Claude API
+runSentimentAnalysis()   <- hits Claude API
 ```
 
 Results are written to an Analysis sheet. Sentiment columns are added directly to the Posts sheet.
@@ -121,11 +120,11 @@ Run `openDashboard()` from `Dashboard.gs`. The dashboard opens as a modal dialog
 
 ## Sample insights from r/personalfinance
 
-- **85% average upvote ratio** across 500 posts — the community is highly engaged and agreeable
-- **56% of posts are Neutral** in sentiment — most people are asking questions, not venting
-- **Debt appears 265 times** across the dataset despite only 35 posts carrying the Debt flair, suggesting the topic bleeds into budgeting, housing, and planning discussions
-- **Top thread** — *"Windfall and want to move somewhere rural, is it possible?"* — 427 upvotes, 336 comments
-- **Money, pay, and credit** are the three most frequent non-generic keywords across all titles and comments
+- **85% average upvote ratio** across 500 posts. The community is highly engaged and agreeable.
+- **56% of posts are Neutral** in sentiment. Most people are asking questions, not venting.
+- **Debt appears 265 times** across the dataset despite only 35 posts carrying the Debt flair, suggesting the topic bleeds into budgeting, housing, and planning discussions.
+- **Top thread** "Windfall and want to move somewhere rural, is it possible?" pulled 427 upvotes and 336 comments.
+- **Money, pay, and credit** are the three most frequent non-generic keywords across all titles and comments.
 
 ---
 
@@ -146,13 +145,13 @@ Good candidates: `r/financialindependence`, `r/cscareerquestions`, `r/entreprene
 
 ## Notes
 
-- Arctic Shift is a free public API with no authentication required. Be respectful with request frequency — the scripts include a 600ms delay between calls by default.
+- Arctic Shift is a free public API with no authentication required. The scripts include a 600ms delay between calls by default to stay within rate limits.
 - The dashboard runs entirely inside Google Sheets via HtmlService. No server, no hosting, no external dependencies.
-- The comment fetcher is resume-able — if it times out mid-run, just run `fetchNextCommentBatch()` again and it picks up from where it left off.
+- The comment fetcher is resume-able. If it times out mid-run, just run `fetchNextCommentBatch()` again and it picks up from where it left off.
 - Sentiment analysis skips already-labeled posts so it is safe to re-run without double-spending API credits.
 
 ---
 
 ## License
 
-MIT — use it, fork it, build on it.
+MIT. Use it, fork it, build on it.
