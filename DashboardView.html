@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #1e2535;
+    }
+    .header-left h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+    .header-left p {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+    .badge {
+      background: #ff4500;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── STAT CARDS ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .stat-card {
+      background: #161b27;
+      border: 1px solid #1e2535;
+      border-radius: 10px;
+      padding: 16px 20px;
+    }
+    .stat-card .label {
+      font-size: 11px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+    .stat-card .value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .stat-card .sub {
+      font-size: 11px;
+      color: #475569;
+      margin-top: 2px;
+    }
+
+    /* ── GRID LAYOUT ── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .span-2 { grid-column: span 2; }
+
+    /* ── PANEL ── */
+    .panel {
+      background: #161b27;
+      border: 1px solid #1e2535;
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .panel-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 16px;
+    }
+
+    /* ── SENTIMENT DONUT ── */
+    .sentiment-wrap {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .donut-container {
+      position: relative;
+      width: 130px;
+      height: 130px;
+      flex-shrink: 0;
+    }
+    .donut-container canvas { width: 130px; height: 130px; }
+    .donut-center {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    .donut-center .pct { font-size: 22px; font-weight: 700; color: #fff; }
+    .donut-center .lbl { font-size: 10px; color: #64748b; }
+    .sentiment-legend { flex: 1; }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .legend-left { display: flex; align-items: center; gap: 8px; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .legend-name { font-size: 13px; color: #cbd5e1; }
+    .legend-count { font-size: 13px; font-weight: 600; color: #fff; }
+    .legend-bar-wrap {
+      height: 3px;
+      background: #1e2535;
+      border-radius: 2px;
+      margin-top: 4px;
+    }
+    .legend-bar { height: 3px; border-radius: 2px; }
+
+    /* ── KEYWORD BARS ── */
+    .keyword-list { display: flex; flex-direction: column; gap: 7px; }
+    .keyword-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .keyword-name {
+      font-size: 12px;
+      color: #94a3b8;
+      width: 90px;
+      flex-shrink: 0;
+      text-transform: lowercase;
+    }
+    .keyword-bar-wrap {
+      flex: 1;
+      height: 6px;
+      background: #1e2535;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .keyword-bar {
+      height: 6px;
+      border-radius: 3px;
+      background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    }
+    .keyword-count {
+      font-size: 11px;
+      color: #475569;
+      width: 35px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* ── FLAIR CHART ── */
+    .flair-list { display: flex; flex-direction: column; gap: 9px; }
+    .flair-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .flair-name {
+      font-size: 12px;
+      color: #94a3b8;
+      width: 100px;
+      flex-shrink: 0;
+    }
+    .flair-bar-wrap {
+      flex: 1;
+      height: 8px;
+      background: #1e2535;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .flair-bar {
+      height: 8px;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #0ea5e9, #06b6d4);
+    }
+    .flair-count {
+      font-size: 11px;
+      color: #475569;
+      width: 30px;
+      text-align: right;
+    }
+
+    /* ── TOP THREADS ── */
+    .thread-list { display: flex; flex-direction: column; gap: 10px; }
+    .thread-item {
+      border: 1px solid #1e2535;
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      transition: border-color 0.15s;
+    }
+    .thread-item:hover { border-color: #334155; }
+    .thread-rank {
+      font-size: 11px;
+      font-weight: 700;
+      color: #334155;
+      width: 20px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .thread-title {
+      flex: 1;
+      font-size: 13px;
+      color: #cbd5e1;
+      line-height: 1.4;
+    }
+    .thread-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 3px;
+      flex-shrink: 0;
+    }
+    .thread-score {
+      font-size: 13px;
+      font-weight: 600;
+      color: #ff4500;
+    }
+    .thread-comments {
+      font-size: 11px;
+      color: #475569;
+    }
+    .thread-flair {
+      font-size: 10px;
+      background: #1e2535;
+      color: #64748b;
+      padding: 2px 7px;
+      border-radius: 10px;
+    }
+
+    /* ── AI PANEL ── */
+    .ai-panel {
+      background: #161b27;
+      border: 1px solid #312e81;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .ai-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .ai-dot {
+      width: 8px; height: 8px;
+      background: #6366f1;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    .ai-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #818cf8;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .ai-input-row {
+      display: flex;
+      gap: 10px;
+    }
+    .ai-input {
+      flex: 1;
+      background: #0f1117;
+      border: 1px solid #1e2535;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #e2e8f0;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .ai-input:focus { border-color: #4f46e5; }
+    .ai-input::placeholder { color: #334155; }
+    .ai-btn {
+      background: #4f46e5;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .ai-btn:hover { background: #4338ca; }
+    .ai-btn:disabled { background: #1e2535; color: #475569; cursor: not-allowed; }
+    .ai-response {
+      margin-top: 14px;
+      font-size: 13px;
+      color: #94a3b8;
+      line-height: 1.7;
+      min-height: 20px;
+      padding: 12px 14px;
+      background: #0f1117;
+      border-radius: 8px;
+      border: 1px solid #1e2535;
+      display: none;
+    }
+    .ai-response.visible { display: block; }
+    .ai-thinking {
+      color: #4f46e5;
+      font-style: italic;
+    }
+
+    /* ── SUGGESTIONS ── */
+    .suggestions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .suggestion-chip {
+      font-size: 11px;
+      color: #475569;
+      background: #0f1117;
+      border: 1px solid #1e2535;
+      border-radius: 20px;
+      padding: 4px 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .suggestion-chip:hover {
+      border-color: #4f46e5;
+      color: #818cf8;
+    }
+
+    /* ── LOADING ── */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 200px;
+      color: #334155;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-left">
+      <h1>r/personalfinance</h1>
+      <p>Subreddit Analysis Dashboard — 500 most recent posts</p>
+    </div>
+    <span class="badge">LIVE DATA</span>
+  </div>
+
+  <div id="loading" class="loading">Loading data from Google Sheets...</div>
+  <div id="content" style="display:none">
+
+    <!-- STAT CARDS -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="label">Posts Analyzed</div>
+        <div class="value" id="stat-posts">—</div>
+        <div class="sub">r/personalfinance</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Avg Score</div>
+        <div class="value" id="stat-score">—</div>
+        <div class="sub">upvotes per post</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Avg Comments</div>
+        <div class="value" id="stat-comments">—</div>
+        <div class="sub">per post</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Avg Upvote Ratio</div>
+        <div class="value" id="stat-ratio">—</div>
+        <div class="sub">community approval</div>
+      </div>
+    </div>
+
+    <!-- AI PANEL -->
+    <div class="ai-panel">
+      <div class="ai-header">
+        <div class="ai-dot"></div>
+        <span class="ai-title">Ask Claude about this data</span>
+      </div>
+      <div class="ai-input-row">
+        <input class="ai-input" id="ai-input" type="text"
+          placeholder="e.g. What topics stress people out most?" />
+        <button class="ai-btn" id="ai-btn" onclick="askClaude()">Ask</button>
+      </div>
+      <div class="suggestions">
+        <span class="suggestion-chip" onclick="setQuestion(this)">What topics stress people out most?</span>
+        <span class="suggestion-chip" onclick="setQuestion(this)">What does the community celebrate?</span>
+        <span class="suggestion-chip" onclick="setQuestion(this)">What financial mistakes come up most?</span>
+        <span class="suggestion-chip" onclick="setQuestion(this)">What age groups seem most active?</span>
+        <span class="suggestion-chip" onclick="setQuestion(this)">What's the general mood of the subreddit?</span>
+      </div>
+      <div class="ai-response" id="ai-response"></div>
+    </div>
+
+    <!-- ROW 1: Sentiment + Keywords -->
+    <div class="grid-2" style="margin-bottom:16px">
+      <div class="panel">
+        <div class="panel-title">Sentiment Breakdown</div>
+        <div class="sentiment-wrap">
+          <div class="donut-container">
+            <canvas id="donutChart" width="130" height="130"></canvas>
+            <div class="donut-center">
+              <div class="pct" id="donut-pct">—</div>
+              <div class="lbl">positive</div>
+            </div>
+          </div>
+          <div class="sentiment-legend" id="sentiment-legend"></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Top Keywords</div>
+        <div class="keyword-list" id="keyword-list"></div>
+      </div>
+    </div>
+
+    <!-- ROW 2: Flair + Top Threads -->
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-title">Posts by Category</div>
+        <div class="flair-list" id="flair-list"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Top Threads</div>
+        <div class="thread-list" id="thread-list"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ── LOAD DATA ─────────────────────────────────────────────
+    google.script.run
+      .withSuccessHandler(renderDashboard)
+      .withFailureHandler((e) => {
+        document.getElementById("loading").textContent = "Error loading data: " + e.message;
+      })
+      .getDashboardData();
+
+    function renderDashboard(data) {
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("content").style.display = "block";
+
+      renderStats(data.stats);
+      renderSentiment(data.sentiment);
+      renderKeywords(data.keywords);
+      renderFlair(data.flair);
+      renderThreads(data.topThreads);
+    }
+
+    // ── STATS ─────────────────────────────────────────────────
+    function renderStats(stats) {
+      document.getElementById("stat-posts").textContent = stats.totalPosts.toLocaleString();
+      document.getElementById("stat-score").textContent = stats.avgScore.toLocaleString();
+      document.getElementById("stat-comments").textContent = stats.avgComments.toLocaleString();
+      document.getElementById("stat-ratio").textContent = stats.avgUpvoteRatio + "%";
+    }
+
+    // ── SENTIMENT DONUT ───────────────────────────────────────
+    function renderSentiment(sentiment) {
+      const total = sentiment.Positive + sentiment.Neutral + sentiment.Negative;
+      const positivePct = Math.round((sentiment.Positive / total) * 100);
+
+      document.getElementById("donut-pct").textContent = positivePct + "%";
+
+      const colors = {
+        Positive: "#22c55e",
+        Neutral:  "#64748b",
+        Negative: "#ef4444",
+      };
+
+      // Draw donut chart on canvas
+      const canvas = document.getElementById("donutChart");
+      const ctx = canvas.getContext("2d");
+      const cx = 65, cy = 65, r = 52, lineWidth = 14;
+      const items = [
+        { label: "Positive", value: sentiment.Positive },
+        { label: "Neutral",  value: sentiment.Neutral },
+        { label: "Negative", value: sentiment.Negative },
+      ];
+
+      ctx.clearRect(0, 0, 130, 130);
+      let startAngle = -Math.PI / 2;
+
+      items.forEach((item) => {
+        const slice = (item.value / total) * 2 * Math.PI;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, startAngle, startAngle + slice);
+        ctx.strokeStyle = colors[item.label];
+        ctx.lineWidth = lineWidth;
+        ctx.stroke();
+        startAngle += slice;
+      });
+
+      // Legend
+      const legendEl = document.getElementById("sentiment-legend");
+      legendEl.innerHTML = items.map((item) => {
+        const pct = Math.round((item.value / total) * 100);
+        return `
+          <div class="legend-item">
+            <div class="legend-left">
+              <div class="legend-dot" style="background:${colors[item.label]}"></div>
+              <span class="legend-name">${item.label}</span>
+            </div>
+            <span class="legend-count">${item.value}</span>
+          </div>
+          <div class="legend-bar-wrap">
+            <div class="legend-bar" style="width:${pct}%;background:${colors[item.label]}"></div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // ── KEYWORDS ──────────────────────────────────────────────
+    function renderKeywords(keywords) {
+      const max = keywords[0]?.count || 1;
+      const el = document.getElementById("keyword-list");
+      el.innerHTML = keywords.map((k) => `
+        <div class="keyword-row">
+          <span class="keyword-name">${k.word}</span>
+          <div class="keyword-bar-wrap">
+            <div class="keyword-bar" style="width:${Math.round((k.count/max)*100)}%"></div>
+          </div>
+          <span class="keyword-count">${k.count}</span>
+        </div>
+      `).join("");
+    }
+
+    // ── FLAIR ─────────────────────────────────────────────────
+    function renderFlair(flairs) {
+      const max = flairs[0]?.count || 1;
+      const el = document.getElementById("flair-list");
+      el.innerHTML = flairs.map((f) => `
+        <div class="flair-row">
+          <span class="flair-name">${f.flair}</span>
+          <div class="flair-bar-wrap">
+            <div class="flair-bar" style="width:${Math.round((f.count/max)*100)}%"></div>
+          </div>
+          <span class="flair-count">${f.count}</span>
+        </div>
+      `).join("");
+    }
+
+    // ── TOP THREADS ───────────────────────────────────────────
+    function renderThreads(threads) {
+      const el = document.getElementById("thread-list");
+      el.innerHTML = threads.map((t, i) => `
+        <div class="thread-item">
+          <span class="thread-rank">#${i + 1}</span>
+          <span class="thread-title">${t.title}</span>
+          <div class="thread-meta">
+            <span class="thread-score">${t.score.toLocaleString()}</span>
+            <span class="thread-comments">${t.comments} comments</span>
+            ${t.flair ? `<span class="thread-flair">${t.flair}</span>` : ""}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    // ── AI PANEL ──────────────────────────────────────────────
+    function setQuestion(el) {
+      document.getElementById("ai-input").value = el.textContent;
+      askClaude();
+    }
+
+    function askClaude() {
+      const input = document.getElementById("ai-input");
+      const btn = document.getElementById("ai-btn");
+      const responseEl = document.getElementById("ai-response");
+      const question = input.value.trim();
+
+      if (!question) return;
+
+      btn.disabled = true;
+      btn.textContent = "Thinking...";
+      responseEl.className = "ai-response visible";
+      responseEl.innerHTML = '<span class="ai-thinking">Claude is analyzing the data...</span>';
+
+      google.script.run
+        .withSuccessHandler((answer) => {
+          responseEl.textContent = answer;
+          btn.disabled = false;
+          btn.textContent = "Ask";
+        })
+        .withFailureHandler((e) => {
+          responseEl.textContent = "Error: " + e.message;
+          btn.disabled = false;
+          btn.textContent = "Ask";
+        })
+        .askClaudeAboutData(question);
+    }
+
+    // Allow Enter key to submit
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && document.activeElement.id === "ai-input") {
+        askClaude();
+      }
+    });
+  </script>
+</body>
+</html>
