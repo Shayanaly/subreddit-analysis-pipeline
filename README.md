@@ -143,6 +143,14 @@ Good candidates: `r/financialindependence`, `r/cscareerquestions`, `r/entreprene
 
 ---
 
+## Want this for your subreddit or community?
+
+This pipeline can be adapted to any public subreddit, brand community, or online forum. Whether you want to track sentiment over time, identify what topics your audience cares about most, or build a live dashboard on top of your community data, this can be customized to fit your use case.
+
+Reach out at **shayanalee321@gmail.com** and describe what you have in mind.
+
+---
+
 ## Notes
 
 - Arctic Shift is a free public API with no authentication required. The scripts include a 600ms delay between calls by default to stay within rate limits.
